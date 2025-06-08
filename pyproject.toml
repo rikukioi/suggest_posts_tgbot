@@ -1,0 +1,7 @@
+[project]
+name = "sk-predlozhkabot"
+version = "0.1.0"
+description = "Бот предложка для telegram-канала shitpost kingdom"
+readme = "README.md"
+requires-python = ">=3.11.2"
+dependencies = []
