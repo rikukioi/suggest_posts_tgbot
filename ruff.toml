@@ -1,0 +1,62 @@
+# ===== Основные настройки =====
+line-length = 120  # Современный стандарт
+target-version = "py312"  # Поддержка Python 3.12+
+
+# ===== Линтинг =====
+[lint]
+select = [
+    "E",   # Pycodestyle errors
+    "F",   # Pyflakes
+    "W",   # Pycodestyle warnings
+    "UP",  # Pyupgrade (автоапдейт синтаксиса)
+    "I",   # isort (сортировка импортов)
+    "C",   # Ruff-специфичные правила
+    "B",   # flake8-bugbear
+    "Q",   # flake8-quotes
+    "D",   # pydocstyle (документация)
+    "S",   # flake8-bandit (безопасность)
+    "T20", # flake8-print (запрет print)
+    "EM",  # flake8-errmsg
+    "RET", # flake8-return
+    "SLF", # flake8-self
+    "PTH", # flake8-use-pathlib
+]
+
+ignore = [
+    "E501",  # Игнорируем длину строки (форматтер сам обработает)
+    "D107",  # Пропускаем отсутствие docstring в __init__
+]
+
+exclude = [
+    "venv",
+    ".venv"
+]
+
+# ===== Сортировка импортов =====
+[lint.isort]
+known-first-party = ["meme-api"]
+lines-between-types = 1
+lines-after-imports = 2
+combine-as-imports = true
+split-on-trailing-comma = true
+
+# ===== Форматирование =====
+[format]
+docstring-code-format = true
+quote-style = "double"
+skip-magic-trailing-comma = false  # Всегда ставим trailing comma
+indent-style = "space"  # 4 пробела
+
+# ===== Доп. правила =====
+[lint.pydocstyle]
+convention = "google"  # Google-style докстринги
+
+[lint.flake8-quotes]
+inline-quotes = "double"
+multiline-quotes = "double"
+docstring-quotes = "double"
+
+[lint.per-file-ignores]
+"__init__.py" = ["F401", "D104"]  # Игнорируем неиспользуемые импорты в __init__
+"tests/**" = ["S101"]     # Игнорируем assert в тестах
+
