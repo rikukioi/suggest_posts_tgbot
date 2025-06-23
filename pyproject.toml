@@ -1,7 +1,15 @@
 [project]
-name = "sk-predlozhkabot"
+name = "shitpost_kingdom_submission_bot"
 version = "0.1.0"
-description = "Бот предложка для telegram-канала shitpost kingdom"
+description = "Бот предложка для telegram-канала королевство щитпоста"
 readme = "README.md"
 requires-python = ">=3.11.2"
-dependencies = []
+dependencies = [
+    "aiogram>=3.20.0.post0",
+    "asyncio>=3.4.3",
+]
+
+[dependency-groups]
+dev = [
+    "python-dotenv>=1.1.0",
+]

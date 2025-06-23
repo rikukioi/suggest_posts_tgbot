@@ -1,0 +1,6 @@
+services:
+  telegram-bot:
+    build: ./
+    image: tg_suggest_bot
+    container_name: telegram-bot
+    restart: on-failure
