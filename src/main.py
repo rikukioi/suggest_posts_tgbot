@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import sys
 
 from os import getenv
 
@@ -11,6 +10,8 @@ from dotenv import load_dotenv
 
 from src.handlers.admin import router as admin_router
 from src.handlers.user import router as user_router
+
+from .logging_conf import configure_logger
 
 
 dp = Dispatcher()
@@ -26,11 +27,11 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    load_dotenv()
     try:
-        logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+        load_dotenv()
+        configure_logger()
         asyncio.run(main())
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        logging.log(level=20, msg=str(e))
+        logging.error(msg=str(e), stack_info=True)
