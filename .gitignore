@@ -198,3 +198,5 @@ cython_debug/
 
 # vscode
 .vscode
+
+bot.db
