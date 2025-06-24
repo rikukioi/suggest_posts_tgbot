@@ -45,7 +45,7 @@ loggers:
     level: INFO
     handlers: [console, file, error_file]
     propagate: False
-  aiogram.event:
-    level: INFO
-    handlers: [console, file, error_file]
+  database:
+    level: DEBUG
+    handlers: [file, error_file]
     propagate: False
