@@ -1,13 +1,15 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from typing import Any
 
-Base = declarative_base()
+from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker
+
 
 engine = create_engine("sqlite:///./bot.db", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def get_db() -> Session:
+
+async def get_db() -> AsyncSession[Any, Any, Any]:
     db = SessionLocal()
     try:
         yield db
