@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.future import select
 from src.database import get_db
 from src.models import User, Post
-from src.keyboards.inline.inline_admin import get_post_approval
+from src.keyboards.inline.inline_admin import post_approval
 
 load_dotenv()
 
@@ -57,7 +57,7 @@ async def post_suggest(message: Message, bot: Bot) -> None:
                 chat_id=admin_chat,
                 photo=new_post.file_id,
                 caption=new_post.caption,
-                reply_markup=get_post_approval(new_post.id)
+                reply_markup=post_approval
             )
             await message.reply(text="Вы нас балуете, милорд! Пост отправлен нашему горячо любимому барону...")
         # elif message.content_type == "video":
