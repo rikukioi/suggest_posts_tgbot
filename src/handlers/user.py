@@ -9,12 +9,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import Post
 from src.keyboards.inline.inline_admin import post_approval
-from src.middlewares import DatabaseMiddleware
+from src.middlewares import DatabaseMiddleware, UserRegisterMiddleware
 
 
 load_dotenv()
 router = Router(name="user_commands_router")
 router.message.middleware(DatabaseMiddleware())
+router.message.middleware(UserRegisterMiddleware())
 logger = logging.getLogger("tg_handlers")
 admin_chat = getenv("ADMIN_CHAT_ID")
 

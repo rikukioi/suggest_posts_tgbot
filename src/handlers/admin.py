@@ -41,12 +41,12 @@ async def approve_post(callback: CallbackQuery, bot: Bot, session: AsyncSession)
     logger.info("Пост опубликован в канал id=%s", channel_id)
 
 
-@router.callback_query(F.data == "post_decline")
+@router.callback_query(F.data == "post_declined")
 async def decline_post(callback: CallbackQuery, session: AsyncSession) -> None:
     logger.info("Админ id=%s отклонил публикацию", admin_id)
     await callback.message.edit_reply_markup(reply_markup=None)
 
     post_id = hash(callback.data)
-    session.delete(select(Post).filter_by(id=post_id))
+    await session.delete(select(Post).filter_by(id=post_id))
 
     await callback.answer("Пост отклонен")
