@@ -1,3 +1,5 @@
+import logging
+
 from os import getenv
 from aiogram import Bot, F, Router
 from aiogram.types import Message
@@ -10,12 +12,14 @@ from src.models import User, Post
 from src.keyboards.inline.inline_admin import post_approval
 
 load_dotenv()
-
 router = Router(name="user_commands_router")
+logger = logging.getLogger("tg_handlers")
 admin_chat = getenv("ADMIN_CHAT_ID")
 
 @router.message(F.text == "/start")
 async def start_command(message: Message) -> None:
+    logger.info("Пользователь id=%s нажал /start", message.from_user.id)
+
     await message.answer(
         text="Здравствуй, житель нашего прекрасного королевства! Отправь мне картинку и я доставлю ее нашему барону."
     )
@@ -68,3 +72,4 @@ async def post_suggest(message: Message, bot: Bot) -> None:
     except SQLAlchemyError:
         db.rollback()
         await message.reply(text="Ошибка при обработке поста. Попробуйте позже.")
+
