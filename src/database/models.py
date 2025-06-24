@@ -1,9 +1,15 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text, Enum
 from sqlalchemy.orm import declarative_base, relationship
+
+from enum import Enum as PyEnum
 
 
 Base = declarative_base()
 
+class PostStatus(PyEnum):
+    WAITING = 'waiting'
+    PUBLISHED = 'published'
+    DECLINED = 'declined'
 
 class User(Base):
     __tablename__ = "users"
@@ -23,6 +29,6 @@ class Post(Base):
     content_type = Column(String)
     file_id = Column(String)
     caption = Column(Text)
-    approved = Column(Boolean, default=False)
+    status = Column(Enum(PostStatus), default=PostStatus.WAITING)
     user_id = Column(Integer, ForeignKey("users.id"))
     author = relationship("User", back_populates="posts")
