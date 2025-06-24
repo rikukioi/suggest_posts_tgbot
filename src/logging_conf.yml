@@ -35,7 +35,7 @@ handlers:
   sql_queries:
     class: logging.handlers.RotatingFileHandler
     formatter: error_formatter
-    level: ERROR
+    level: INFO
     filename: src/logs/sql_queries.log
     maxBytes: 10485760 # 10M
     encoding: utf-8
@@ -60,5 +60,5 @@ loggers:
     propagate: False
   sqlalchemy:
     level: DEBUG
-    handlers: [sql_queries]
+    handlers: [sql_queries, error_file, console]
     propagate: False
