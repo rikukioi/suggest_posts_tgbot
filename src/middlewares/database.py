@@ -21,7 +21,7 @@ class DatabaseMiddleware(BaseMiddleware):
         handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
         data: dict[str, Any],
-    ) -> Any | None:
+    ) -> Any:
         """Вызов основного функционала.
 
         Args:
@@ -40,13 +40,13 @@ class DatabaseMiddleware(BaseMiddleware):
 
                 logger.info(
                     "Транзакция успешно завершена",
-                    extra={"handler": handler.__name__, "duration_sec": round(duration, 3)},
+                    extra={"handler": str(handler), "duration_sec": round(duration, 3)},
                 )
 
                 if duration > 3.0:
                     logger.warning(
                         "Медленная транзакция",
-                        extra={"handler": handler.__name__, "duration_sec": round(duration, 3)},
+                        extra={"handler": str(handler), "duration_sec": round(duration, 3)},
                     )
 
                 return result
@@ -55,6 +55,6 @@ class DatabaseMiddleware(BaseMiddleware):
 
                 logger.error(
                     "Транзакция завершилась ошибкой",
-                    extra={"handler": handler.__name__, "error": str(e), "error_type": e.__class__.__name__},
+                    extra={"handler": str(handler), "error": str(e), "error_type": e.__class__.__name__},
                     exc_info=True,
                 )

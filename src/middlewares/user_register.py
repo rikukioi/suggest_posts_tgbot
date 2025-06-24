@@ -22,7 +22,7 @@ class UserRegisterMiddleware(BaseMiddleware):
         handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
         data: dict[str, Any],
-    ) -> Any | None:
+    ) -> Any:
         """Вызов основного функционала.
 
         Args:
@@ -34,26 +34,26 @@ class UserRegisterMiddleware(BaseMiddleware):
         session: AsyncSession = data["session"]
 
         if not user:
-            await handler(event, data)
+            return await handler(event, data)
 
+        db_user = await session.execute(select(User).where(User.telegram_id == user.id))
+        db_user: User | None = db_user.scalar_one_or_none()
+
+        if not db_user:
+            db_user = User(
+                telegram_id=user.id, username=user.username, first_name=user.first_name, last_name=user.last_name
+            )
+            session.add(db_user)
         else:
-            db_user: User | None = await session.execute(
-                select(User).where(User.telegram_id == user.id)
-            ).scalar_one_or_none()
+            upd_fields = {}
+            if db_user.username != user.username:
+                upd_fields["username"] = user.username
+            if db_user.first_name != user.first_name:
+                upd_fields["first_name"] = user.first_name
+            if db_user.last_name != user.last_name:
+                upd_fields["last_name"] = user.last_name
 
-            if not db_user:
-                db_user = User(
-                    telegram_id=user.id, username=user.username, first_name=user.first_name, last_name=user.last_name
-                )
-                session.add(db_user)
-            else:
-                upd_fields = {}
-                if db_user.username != user.username:
-                    upd_fields["username"] = user.username
-                if db_user.first_name != user.first_name:
-                    upd_fields["first_name"] = user.first_name
-                if db_user.last_name != user.last_name:
-                    upd_fields["last_name"] = user.last_name
+            if upd_fields:
+                await session.execute(update(User).where(User.telegram_id == user.id).values(**upd_fields))
 
-                if upd_fields:
-                    await session.execute(update(User).where(User.telegram_id == user.id).values(**upd_fields))
+        return await handler(event, data)
