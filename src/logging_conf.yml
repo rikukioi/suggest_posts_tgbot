@@ -32,6 +32,15 @@ handlers:
     maxBytes: 10485760 # 10M
     encoding: utf-8
     backupCount: 5
+  sql_queries:
+    class: logging.handlers.RotatingFileHandler
+    formatter: error_formatter
+    level: INFO
+    filename: src/logs/sql_queries.log
+    maxBytes: 10485760 # 10M
+    encoding: utf-8
+    backupCount: 5
+
 
 loggers:
   root:
@@ -45,7 +54,11 @@ loggers:
     level: INFO
     handlers: [console, file, error_file]
     propagate: False
-  aiogram.event:
-    level: INFO
-    handlers: [console, file, error_file]
+  database:
+    level: DEBUG
+    handlers: [file, error_file]
+    propagate: False
+  sqlalchemy:
+    level: DEBUG
+    handlers: [sql_queries, error_file, console]
     propagate: False
