@@ -7,7 +7,7 @@ from aiogram.types import Message
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.models import Post
+from src.database.models import Post, PostStatus
 from src.keyboards.inline.inline_admin import post_approval
 from src.middlewares import DatabaseMiddleware, UserRegisterMiddleware
 
@@ -33,14 +33,13 @@ async def start_command(message: Message) -> None:
 async def post_suggest(message: Message, bot: Bot, session: AsyncSession) -> None:
     user = message.from_user
 
-    new_post = Post(content_type="photo", file_id=message.photo[-1].file_id, caption=message.caption, user_id=user.id)
-    session.add(new_post)
-    await session.flush()
-
     await bot.send_message(
         chat_id=admin_chat, text=f"Предложен пост от {user.first_name} {user.last_name} | {user.username}"
     )
     if message.content_type == "photo":
+        new_post = Post(content_type="photo", file_id=message.photo[-1].file_id, caption=message.caption, status=PostStatus.WAITING.value, user_id=user.id)
+        session.add(new_post)
+        await session.flush()
         await bot.send_photo(
             chat_id=admin_chat, photo=new_post.file_id, caption=new_post.caption, reply_markup=post_approval
         )
