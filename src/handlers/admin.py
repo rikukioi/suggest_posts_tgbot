@@ -9,6 +9,7 @@ from aiogram.types import CallbackQuery
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import update
 
 from src.database.models import Post, PostStatus
 from src.filters import IsAdmin
@@ -33,10 +34,11 @@ async def approve_post(callback: CallbackQuery, bot: Bot, session: AsyncSession)
 
     message = callback.message
     file_id = message.photo[-1].file_id
-    post = await session.get(Post, file_id)
-    post.status = PostStatus.PUBLISHED.value
-    # await bot.send_message(chat_id=int(post.user_id), text="Ваше предложение было одобрено.")
-    await session.commit()
+    await session.execute(update(Post).where(Post.file_id == file_id).values(status=PostStatus.PUBLISHED.value))
+    result = await session.execute(select(Post.user_id).where(Post.file_id == file_id))
+    user_id = result.scalar_one_or_none()
+    if user_id:
+        await bot.send_message(chat_id=int(user_id), text="Ваше предложение было одобрено.")
 
     await bot.send_photo(chat_id=channel_id, photo=message.photo[-1].file_id, caption=message.caption)
     
@@ -51,9 +53,11 @@ async def decline_post(callback: CallbackQuery, bot: Bot, session: AsyncSession)
     
     message = callback.message
     file_id = message.photo[-1].file_id
-    post = await session.get(Post, file_id)
-    post.status = PostStatus.DECLINED.value
-    # await bot.send_message(chat_id=int(post.user_id), text="Ваше предложение было отклонено.")
+    await session.execute(update(Post).where(Post.file_id == file_id).values(status=PostStatus.DECLINED.value))
+    result = await session.execute(select(Post.user_id).where(Post.file_id == file_id))
+    user_id = result.scalar_one_or_none()
+    if user_id:
+        await bot.send_message(chat_id=int(user_id), text="Ваше предложение было отклонено.")
     await session.commit()
 
     await callback.answer("Пост отклонен")
