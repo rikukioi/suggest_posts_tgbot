@@ -58,6 +58,5 @@ async def decline_post(callback: CallbackQuery, bot: Bot, session: AsyncSession)
     user_id = result.scalar_one_or_none()
     if user_id:
         await bot.send_message(chat_id=int(user_id), text="Ваше предложение было отклонено.")
-    await session.commit()
 
     await callback.answer("Пост отклонен")
